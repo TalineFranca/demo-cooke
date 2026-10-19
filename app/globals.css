@@ -1,0 +1,141 @@
+@import "tailwindcss";
+
+@theme {
+  --color-royal: #1a0fb5;
+  --color-bebe: #f5a6cf;
+  --color-nevoa: #e4e4e4;
+
+  --font-display: var(--font-anton), "Impact", "Arial Narrow", sans-serif;
+  --font-sans: var(--font-dm-sans), system-ui, sans-serif;
+  --font-logo: var(--font-fredoka), var(--font-dm-sans), sans-serif;
+}
+
+/* tamanho da mordida, animável */
+@property --mordida {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
+html {
+  background: var(--color-royal);
+  color: #fff;
+  -webkit-tap-highlight-color: transparent;
+  /* sem zoom de toque duplo (partir/juntar o cookie é toque rápido); pinça continua valendo */
+  touch-action: manipulation;
+}
+
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--color-bebe);
+  color: var(--color-royal);
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-bebe);
+  outline-offset: 3px;
+}
+
+section[id] {
+  scroll-margin-top: 4rem;
+}
+
+/* grão sutil por cima de tudo, para o azul não ficar chapado */
+.grao {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  pointer-events: none;
+  opacity: 0.08;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  mix-blend-mode: multiply;
+}
+
+/* texto vazado (só contorno) */
+.texto-vazado {
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 2px #fff;
+}
+.texto-vazado-rosa {
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 2px var(--color-bebe);
+}
+.texto-vazado-grosso {
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 3px currentColor;
+}
+.texto-vazado-fino {
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 1.5px currentColor;
+}
+
+/* a mordida: três círculos "comidos" da casca revelam o miolo por baixo */
+.mordivel {
+  container-type: inline-size;
+  --mordida: 0;
+  transition: --mordida 0.5s cubic-bezier(0.3, 1.5, 0.5, 1);
+}
+.mordivel[data-mordido="true"] {
+  --mordida: 22;
+}
+@media (hover: hover) {
+  .group:hover .mordivel {
+    --mordida: 22;
+  }
+}
+.mordivel > .casca {
+  /* círculos de verdade (raio em cqw), não elipses, mesmo numa foto retangular */
+  --m: radial-gradient(circle calc(var(--mordida) * 1cqw) at 90% 14%, #0000 97%, #000 100%),
+    radial-gradient(circle calc(var(--mordida) * 0.72cqw) at 66% 4%, #0000 97%, #000 100%),
+    radial-gradient(circle calc(var(--mordida) * 0.7cqw) at 100% 38%, #0000 97%, #000 100%);
+  -webkit-mask-image: var(--m);
+  -webkit-mask-composite: source-in;
+  mask-image: var(--m);
+  mask-composite: intersect;
+}
+
+/* bolinha do WhatsApp pulsando */
+@keyframes pulso {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  80%,
+  100% {
+    transform: scale(1.7);
+    opacity: 0;
+  }
+}
+.zap-pulso {
+  animation: pulso 1.8s ease-out infinite;
+}
+
+/* easter egg */
+@keyframes cair {
+  from {
+    transform: translateY(-25vh) rotate(0deg);
+  }
+  to {
+    transform: translateY(125vh) rotate(var(--giro));
+  }
+}
+.chuva-cookie {
+  transform: translateY(-25vh);
+  animation-name: cair;
+  animation-timing-function: cubic-bezier(0.45, 0, 0.85, 0.6);
+  animation-fill-mode: forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mordivel {
+    transition: none;
+  }
+  .zap-pulso {
+    animation: none;
+  }
+}
