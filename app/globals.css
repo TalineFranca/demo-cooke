@@ -90,9 +90,10 @@ section[id] {
 }
 .mordivel > .casca {
   /* círculos de verdade (raio em cqw), não elipses, mesmo numa foto retangular */
-  --m: radial-gradient(circle calc(var(--mordida) * 1cqw) at 90% 14%, #0000 97%, #000 100%),
-    radial-gradient(circle calc(var(--mordida) * 0.72cqw) at 66% 4%, #0000 97%, #000 100%),
-    radial-gradient(circle calc(var(--mordida) * 0.7cqw) at 100% 38%, #0000 97%, #000 100%);
+  /* + 0.5px: raio 0 é gradiente "degenerado" e o Safari do iPhone esconde a camada inteira */
+  --m: radial-gradient(circle calc(var(--mordida) * 1cqw + 0.5px) at 90% 14%, #0000 97%, #000 100%),
+    radial-gradient(circle calc(var(--mordida) * 0.72cqw + 0.5px) at 66% 4%, #0000 97%, #000 100%),
+    radial-gradient(circle calc(var(--mordida) * 0.7cqw + 0.5px) at 100% 38%, #0000 97%, #000 100%);
   -webkit-mask-image: var(--m);
   -webkit-mask-composite: source-in;
   mask-image: var(--m);
